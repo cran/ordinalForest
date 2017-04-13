@@ -1,0 +1,74 @@
+#' Ordinal Forests: Prediction, Class Width Inference and Variable Ranking with Ordinal Target Variables
+#'
+#' Ordinal forests (OF) are a method for ordinal regression with high-dimensional and low-dimensional 
+#' data that is able to predict the values of the ordinal target variable for new observations 
+#' and at the same time estimate the relative widths of the classes of the ordinal target variable. Using a 
+#' (permutation-based) variable importance measure it is moreover possible to rank the importances 
+#' of the covariates. \cr
+#' OF will be presented in an upcoming technical report by Hornung et al..
+#'
+#' For a detailed description of OF see: \code{\link{ordfor}}
+#'
+#' The main functions are: \code{\link{ordfor}} (construction of OF), 
+#' \code{\link{predict.ordfor}} (prediction of the target variable values of new observations), and
+#' \code{\link{plot.ordfor}} (visualization of the estimated relative widths of the
+#' classes of the ordinal target variable).
+#'
+#' @examples
+#' \dontrun{
+#' # Illustration of the key functionalities of the package:
+#' ##########################################################
+#' 
+#' # Load example dataset:
+#' 
+#' data(hearth)
+#' 
+#' # Inspect the data:
+#' table(hearth$Class)
+#' dim(hearth)
+#'
+#' head(hearth) 
+#'
+#' 
+#' # Split into training dataset and test dataset:
+#' 
+#' set.seed(123)
+#' trainind <- sort(sample(1:nrow(hearth), size=floor(nrow(hearth)*(2/3))))
+#' testind <- setdiff(1:nrow(hearth), trainind)
+#' 
+#' datatrain <- hearth[trainind,]
+#' datatest <- hearth[testind,]
+#' 
+#' 
+#' # Construct OF using the training dataset:
+#' 
+#' ordforres <- ordfor(depvar="Class", data=datatrain, ndiv=1000, ntreeperdiv=100, 
+#'   ntreefinal=5000, perfmeasure = "equal")
+#' ordforres
+#' 
+#' # Study variable importance values:
+#' sort(ordforres$varimp, decreasing=TRUE)
+#'
+#' # Take a closer look at the top variables:
+#' boxplot(datatrain$oldpeak ~ datatrain$Class, horizontal=TRUE)
+#' fisher.test(table(datatrain$exang, datatrain$Class))
+#' 
+#' # Plot the optimized partition:
+#' # using ggplot2:
+#' plot(ordforres)
+#' # without ggplot2:
+#' plot(ordforres, useggplot=FALSE)
+#' 
+#' 
+#' # Predict values of the ordinal target variable in the test dataset:
+#' 
+#' preds <- predict(ordforres, newdata=datatest)
+#' preds
+#' 
+#' # Compare predicted values with true values:
+#' table(data.frame(true_values=datatest$Class, predictions=preds$ypred))
+#' } 
+#'
+#' @name ordinalForest-package
+#' @aliases ordinalForest
+NULL
