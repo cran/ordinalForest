@@ -17,7 +17,7 @@
 \code{predict.ordfor} returns an object of class \code{ordforpred}.
 An object of class "\code{ordforpred}" is a list containing the following components: 
 \item{ypred}{ vector of length \code{nrow(newdata)}. Factor-valued test data predictions. }
-\item{yforestpredmetric}{ vector of length \code{nrow(newdata)}. Numeric test data predictions: Result of applying the regression forest \code{forestfinal} returned by \code{\link{ordfor}}. }
+\item{classfreqtree}{ matrix of dimension \code{nrow(newdata)} x J. The value in the j-th column of the i-th row contains the frequency of trees that predicted class j for test observation i. }
 }
 \description{
 Prediction of test data using ordinal forest.
@@ -32,8 +32,9 @@ testind <- setdiff(1:nrow(hearth), trainind)
 datatrain <- hearth[trainind,]
 datatest <- hearth[testind,]
 
-ordforres <- ordfor(depvar="Class", data=datatrain, ndiv=80, nbest=5)
-# NOTE: ndiv=80 is not enough!! In practice, ndiv=1000 (default value) or a higher
+ordforres <- ordfor(depvar="Class", data=datatrain, nsets=60, nbest=5)
+# NOTE: nsets=60 is not enough, because the prediction performance of the resulting 
+# ordinal forest will be suboptimal!! In practice, nsets=1000 (default value) or a 
 # number should be used.
 
 preds <- predict(ordforres, newdata=datatest)
@@ -41,10 +42,6 @@ preds
  
 table(data.frame(true_values=datatest$Class, predictions=preds$ypred))
 
-par(mfrow=c(1,2)) 
-plot(preds$yforestpredmetric, as.numeric(preds$ypred))
-plot(pnorm(preds$yforestpredmetric), as.numeric(preds$ypred), xlim=c(0,1))
-par(mfrow=c(1,1))
+head(preds$classfreqtree)
 
 }
-

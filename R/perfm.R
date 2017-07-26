@@ -1,7 +1,7 @@
 #' Performance measures based on Youden's J statistic
 #' 
 #' These performance measures based on Youden's J statistic are used in \code{\link{ordfor}} to measure the performance
-#' of the smaller regression forests constructed for the estimation of the optimal partition. They may however also be used to measure the precision of
+#' of the smaller regression forests constructed for the estimation of the optimal score set. They may, however, also be used to measure the precision of
 #' predictions on new data or the precision of OOB predictions.
 #' 
 #' \code{perfm_equal} should be used if it is of interest to predict each class with the same precision irrespective of the numbers of observations representing the individual classes. 
@@ -41,8 +41,9 @@ NULL
 #' datatrain <- hearth[trainind,]
 #' datatest <- hearth[testind,]
 #'
-#' ordforres <- ordfor(depvar="Class", data=datatrain, ndiv=80, nbest=5)
-#' # NOTE: ndiv=80 is not enough!! In practice, ndiv=1000 (default value) or a higher
+#' ordforres <- ordfor(depvar="Class", data=datatrain, nsets=60, nbest=5)
+#' # NOTE: nsets=60 is not enough, because the prediction performance of the resulting 
+#' # ordinal forest will be suboptimal!! In practice, nsets=1000 (default value) or a 
 #' # number should be used.
 #'
 #' preds <- predict(ordforres, newdata=datatest)
