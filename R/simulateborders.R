@@ -1,5 +1,5 @@
 simulateborders <-
-  function(J, nsets=300, npermtrial=500) {
+  function(J, nsets=300, npermtrial=500, permperdefault=FALSE) {
     
     # Number of possible permutations of the ordering of the widths of the
     # J intervals corresponding to the J classes of the ordinal target
@@ -10,7 +10,7 @@ simulateborders <-
     # of the widths of the intervals 'nperm' is smaller than the number
     # of divisions, than consider all possible permutations.
     # Otherwise heterogeneous as possible rankings are considered:
-    if(nperm < nsets) {
+    if((nperm < nsets) & !permperdefault) {
       # Matrix with all possible permutations:
       permmat <- combinat::permn(1:J)
       permmat <- matrix(nrow=length(permmat), ncol=J, data=unlist(permmat), byrow=TRUE)

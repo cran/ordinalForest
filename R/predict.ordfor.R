@@ -12,19 +12,22 @@
 #' \item{ypred}{ vector of length \code{nrow(newdata)}. Factor-valued test data predictions. }
 #' \item{classfreqtree}{ matrix of dimension \code{nrow(newdata)} x J. The value in the j-th column of the i-th row contains the frequency of trees that predicted class j for test observation i. }
 #'
+#' @references
+#' Hornung R. (2017) Ordinal Forests. Tech. Rep. 212, Department of Statistics, University of Munich.
+#'
 #' @examples
 #' data(hearth)
 #'
 #' set.seed(123)
 #' trainind <- sort(sample(1:nrow(hearth), size=floor(nrow(hearth)*(1/2))))
-#' testind <- setdiff(1:nrow(hearth), trainind)
+#' testind <- sort(sample(setdiff(1:nrow(hearth), trainind), size=20))
 #'
 #' datatrain <- hearth[trainind,]
 #' datatest <- hearth[testind,]
 #'
 #' ordforres <- ordfor(depvar="Class", data=datatrain, nsets=60, nbest=5)
 #' # NOTE: nsets=60 is not enough, because the prediction performance of the resulting 
-#' # ordinal forest will be suboptimal!! In practice, nsets=1000 (default value) or a 
+#' # ordinal forest will be suboptimal!! In practice, nsets=1000 (default value) or a larger
 #' # number should be used.
 #'
 #' preds <- predict(ordforres, newdata=datatest)
@@ -47,11 +50,11 @@ predict.ordfor <-
     
     # Extract some information from 'object':
     
-    nforests <- length(object$perfmeasurevalues)
+    nforests <- length(object$perffunctionvalues)
     
     classes <- object$classes
     bordersb <- object$bordersb
-    perfmeasurevalues <- object$perfmeasurevalues
+    perffunctionvalues <- object$perffunctionvalues
     
     J <- length(classes)
  
@@ -60,7 +63,7 @@ predict.ordfor <-
     
     yforestpredmetricmat <- predict(object=object$forestfinal, data=newdata, predict.all = TRUE)$predictions
     
-    if(!is.na(object$perfmeasurevalues[1]))
+    if(!is.na(object$perffunctionvalues[1]))
       ynumpred <- Reduce("+", lapply(qnorm(object$bordersbest)[1:J], function(x) x <= yforestpredmetricmat))
     else
       ynumpred <- Reduce("+", lapply(c((1:J) - 0.5, J + 0.5)[1:J], function(x) x <= yforestpredmetricmat))

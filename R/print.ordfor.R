@@ -16,13 +16,13 @@ print.ordfor <-
     cat("Forest setup:", "\n")
     cat(paste("Number of trees in ordinal forest: ", x$ntreefinal, sep=""), "\n")
     cat(paste("Number of considered score sets in total: ", x$nsets, sep=""), "\n")
-    cat(paste("Number of best score sets used for estimating the optimal score set: ", x$nbest, sep=""), "\n")
+    cat(paste("Number of best score sets used for approximating the optimal score set: ", x$nbest, sep=""), "\n")
     cat(paste("Number of trees per regression forests constructed in the optimization: ", x$ntreeperdiv, sep=""), "\n")
-    if(!is.na(x$perfmeasure))
-      cat(paste("Performance measure: \"", x$perfmeasure, "\"", sep=""), "\n")
+    if(!is.na(x$perffunction))
+      cat(paste("Performance function: \"", x$perffunction, "\"", sep=""), "\n")
     else
-      cat(paste("Performance measure: ", x$perfmeasure, sep=""), "\n")
-    if(!is.na(x$perfmeasure) & x$perfmeasure=="onecateg")
-      cat(paste("Class to priorize: \"", x$categimp, "\"", sep=""), "\n")
+      cat(paste("Performance function: ", x$perffunction, sep=""), "\n")
+    if(!is.na(x$perffunction) & x$perffunction=="oneclass")
+      cat(paste("Class to priorize: \"", x$classimp, "\"", sep=""), "\n")
     
   }

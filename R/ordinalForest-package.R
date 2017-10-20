@@ -1,22 +1,26 @@
 #' Ordinal Forests: Prediction and Variable Ranking with Ordinal Target Variables
 #'
-#' Ordinal forests (OF) are a method for ordinal regression with high-dimensional and low-dimensional 
-#' data that is able to predict the values of the ordinal target variable for new observations 
-#' based on a training dataset. Using a (permutation-based) variable importance measure it is moreover 
-#' possible to rank the covariates with respect to their importances in the prediction of the values
-#' of the ordinal target variable. \cr
-#' OF will be presented in an upcoming technical report by Hornung et al..
+#' The ordinal forest (OF) method allows ordinal regression with high-dimensional
+#' and low-dimensional data. After having constructed an OF prediction rule using a training dataset, 
+#' it can be used to predict the values of the ordinal target variable for new observations.
+#' Moreover, by means of the (permutation-based) variable importance measure of OF, it is also possible to rank the covariates 
+#' with respect to their importances in the prediction of the values of the ordinal target 
+#' variable. \cr
+#' OF is presented in Hornung (2017).
 #'
-#' For a detailed description of OF see: \code{\link{ordfor}}
+#' For a brief, practice-orientated introduction to OF see: \code{\link{ordfor}}
 #'
-#' The main functions are: \code{\link{ordfor}} (construction of OF) and
-#' \code{\link{predict.ordfor}} (prediction of the target variable values of new observations).
+#' The main functions are: \code{\link{ordfor}} (construction of OF prediction rules) and
+#' \code{\link{predict.ordfor}} (prediction of the values of the target variable values of new observations).
 #'
 #' NOTE: \pkg{ordinalForest} uses R code and C++ code from the R package \pkg{ranger} for the involved regression forests.
 #' \pkg{ordinalForest} does, however, not depend on \pkg{ranger} or import \pkg{ranger}, because it was necessary to
 #' copy the C++ code and parts of the R code from \pkg{ranger} to \pkg{ordinalForest} instead. The reason for this
 #' is that \pkg{ranger}'s C++ code had to be altered in order to calculate a suitable permutation variable importance
 #' measure for ordinal forests.
+#'
+#' @references
+#' Hornung R. (2017) Ordinal Forests. Tech. Rep. 212, Department of Statistics, University of Munich.
 #' 
 #' @examples
 #' \dontrun{
@@ -44,10 +48,10 @@
 #' datatest <- hearth[testind,]
 #' 
 #' 
-#' # Construct OF using the training dataset:
+#' # Construct OF prediction rule using the training dataset:
 #' 
 #' ordforres <- ordfor(depvar="Class", data=datatrain, nsets=1000, ntreeperdiv=100, 
-#'   ntreefinal=5000, perfmeasure = "equal")
+#'   ntreefinal=5000, perffunction = "equal")
 #' ordforres
 #' 
 #' # Study variable importance values:
