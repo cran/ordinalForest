@@ -1,13 +1,13 @@
-420fed495825547a3f7980e95767e2d1 *DESCRIPTION
+98e597bb595c17ee9f981068bbfc577a *DESCRIPTION
 06019c202dd7a520386b9ce704628c64 *NAMESPACE
 9208142cd8ba8cb40f7c33d7e02c3c90 *R/RcppExports.R
-c405e3b5e0ddf3cd9dd01156bf49ba7c *R/hearth.R
+880011f2b0b73a794d0780b6a0693172 *R/hearth.R
 6880c1f790a6a9e3783de05c106ccbbf *R/ordfor.R
 adf23228f6a55eac82c5b2ef021d90d9 *R/ordinalForest-internal.R
 6a44ee8c0420d22e952c7a369d3c7dc9 *R/ordinalForest-package.R
 4efb4b68353a87850b2fedc5f717fbcb *R/perff.R
 77d1065a5c9e82376c05b1da8bce50ef *R/predict.R
-78abca8fc1b1daa87027d95c72c76118 *R/predict.ordfor.R
+f44f879a1ae1d6c114cd3f32c94176c6 *R/predict.ordfor.R
 94ec50c37185186a1e081d39e860a9a0 *R/print.ordfor.R
 df55e7760bc2afdaf9c07b6a95621b90 *R/print.ordforpred.R
 d07702e776a94bae851a1fed21c78333 *R/rangerordfor.R

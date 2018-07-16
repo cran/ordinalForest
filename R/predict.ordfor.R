@@ -75,8 +75,7 @@ predict.ordfor <-
 	
 	# Recode the predictions as a factor variable with levels
     # equal to that of the training data:
-    
-	ynumpred <- apply(freqs, 1, which.max)
+	ynumpred <- apply(freqs, 1, nnet::which.is.max)
     ypred <- factor(classes[ynumpred], levels=classes)
 	
 	

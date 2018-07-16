@@ -2,11 +2,11 @@ Package: ordinalForest
 Type: Package
 Title: Ordinal Forests: Prediction and Variable Ranking with Ordinal
         Target Variables
-Version: 2.1
-Date: 2017-10-18
+Version: 2.2
+Date: 2018-07-16
 Author: Roman Hornung
 Maintainer: Roman Hornung <hornung@ibe.med.uni-muenchen.de>
-Imports: Rcpp (>= 0.11.2), combinat, ggplot2
+Imports: Rcpp (>= 0.11.2), combinat, ggplot2, nnet
 LinkingTo: Rcpp
 Description: The ordinal forest (OF) method allows ordinal regression with high-dimensional
   and low-dimensional data. After having constructed an OF prediction rule using a training dataset, 
@@ -24,6 +24,6 @@ License: GPL-2
 Encoding: UTF-8
 RoxygenNote: 6.0.1
 NeedsCompilation: yes
-Packaged: 2017-10-19 16:40:27 UTC; hornung
+Packaged: 2018-07-16 14:37:16 UTC; hornung
 Repository: CRAN
-Date/Publication: 2017-10-20 18:18:28 UTC
+Date/Publication: 2018-07-16 15:20:10 UTC
