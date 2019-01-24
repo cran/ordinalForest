@@ -11,7 +11,7 @@ it can be used to predict the values of the ordinal target variable for new obse
 Moreover, by means of the (permutation-based) variable importance measure of OF, it is also possible to rank the covariates 
 with respect to their importances in the prediction of the values of the ordinal target 
 variable. \cr
-OF is presented in Hornung (2017).
+OF is presented in Hornung (2019).
 }
 \details{
 For a brief, practice-orientated introduction to OF see: \code{\link{ordfor}}
@@ -75,5 +75,5 @@ table(data.frame(true_values=datatest$Class, predictions=preds$ypred))
 
 }
 \references{
-Hornung R. (2017) Ordinal Forests. Tech. Rep. 212, Department of Statistics, University of Munich.
+Hornung R. (2019) Ordinal Forests. Journal of Classification, <\doi{10.1007/s00357-018-9302-x}>.
 }

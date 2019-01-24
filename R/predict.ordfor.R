@@ -13,7 +13,7 @@
 #' \item{classfreqtree}{ matrix of dimension \code{nrow(newdata)} x J. The value in the j-th column of the i-th row contains the frequency of trees that predicted class j for test observation i. }
 #'
 #' @references
-#' Hornung R. (2017) Ordinal Forests. Tech. Rep. 212, Department of Statistics, University of Munich.
+#' Hornung R. (2019) Ordinal Forests. Journal of Classification, <\doi{10.1007/s00357-018-9302-x}>.
 #'
 #' @examples
 #' data(hearth)

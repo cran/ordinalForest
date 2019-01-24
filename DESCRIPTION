@@ -2,8 +2,8 @@ Package: ordinalForest
 Type: Package
 Title: Ordinal Forests: Prediction and Variable Ranking with Ordinal
         Target Variables
-Version: 2.2
-Date: 2018-07-16
+Version: 2.3
+Date: 2019-01-22
 Author: Roman Hornung
 Maintainer: Roman Hornung <hornung@ibe.med.uni-muenchen.de>
 Imports: Rcpp (>= 0.11.2), combinat, ggplot2, nnet
@@ -14,16 +14,16 @@ Description: The ordinal forest (OF) method allows ordinal regression with high-
   Moreover, by means of the (permutation-based) variable importance measure of OF, it is also
   possible to rank the covariates with respect to their importances in the prediction of the 
   values of the ordinal target variable.
-  OF is presented in Hornung (2017).
+  OF is presented in Hornung (2019).
   The main functions of the package are: ordfor() (construction of OF) and predict.ordfor() 
   (prediction of the target variable values of new observations).
   References:
-  Hornung R. (2017) Ordinal Forests. Tech. Rep. 212, Department of Statistics, 
-  University of Munich.
+  Hornung R. (2019) Ordinal Forests. Journal of Classification, 
+  <doi:10.1007/s00357-018-9302-x>.
 License: GPL-2
 Encoding: UTF-8
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.1
 NeedsCompilation: yes
-Packaged: 2018-07-16 14:37:16 UTC; hornung
+Packaged: 2019-01-24 10:22:52 UTC; hornung
 Repository: CRAN
-Date/Publication: 2018-07-16 15:20:10 UTC
+Date/Publication: 2019-01-24 12:50:02 UTC

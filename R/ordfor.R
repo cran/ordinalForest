@@ -1,10 +1,10 @@
 #' Ordinal forests
 #'
-#' Constructs prediction rules using the ordinal forest (OF) method presented in Hornung (2017). \cr
+#' Constructs prediction rules using the ordinal forest (OF) method presented in Hornung (2019). \cr
 #' The following tasks can be performed using OF: 1) Predicting the values of an ordinal target variable for new observations based on covariate values (see \code{\link{predict.ordfor}});
 #' 2) Ranking the importances of the covariates with respect to predicting the values of the ordinal target variable. \cr
 #' The default values for the hyperparameters \code{nsets}, \code{ntreeperdiv}, \code{ntreefinal}, \code{npermtrial}, and \code{nbest}
-#' were found to be in a reasonable range in Hornung (2017) and it should not be necessary to alter these values in most situations. \cr
+#' were found to be in a reasonable range in Hornung (2019) and it should not be necessary to alter these values in most situations. \cr
 #' For details on OFs see the 'Details' section below.
 #'
 #' @param depvar character. Name of the dependent variable in \code{data}.
@@ -33,6 +33,12 @@
 #' the optimized score set.
 #' @param permperdefault boolean. If set to \code{TRUE}, \code{npermtrial} different permutations will per default 
 #' be tried for the 2th to the \code{nsets}th score set used during the optimization - also for J! < \code{nsets}. Default is \code{FALSE}.
+#' @param mtry integer. Number of variables to possibly split at in each node. Default is the (rounded down) square root of the number variables. 
+#' @param min.node.size integer. Minimal node size. Default is 5.
+#' @param replace boolean. Sample with replacement. Default is \code{TRUE}.
+#' @param sample.fraction numeric. Fraction of observations to sample. Default is 1 for sampling with replacement and 0.632 for sampling without replacement.
+#' @param always.split.variables character. Character vector with variable names to be always selected in addition to the \code{mtry} variables tried for splitting.
+#' @param keep.inbag boolean. Save how often observations are in-bag in each tree. Default is \code{FALSE}.
 #'
 #' @details
 #'
@@ -42,7 +48,7 @@
 #' Moreover, by means of the (permutation-based) variable importance measure of OF, it is also 
 #' possible to rank the covariates with respect to their importances in the prediction of the values
 #' of the ordinal target variable. \cr
-#' OF is presented in Hornung (2017). See the latter publication for details on the method. In the
+#' OF is presented in Hornung (2019). See the latter publication for details on the method. In the
 #' following, a brief, practice-orientated introduction to OF is provided.
 #' }
 #'
@@ -95,14 +101,14 @@
 #' optimization in order to increase the chance that the best of the considered score sets are close to the optimal score set.
 #' To further increase this chance, it is in addition necessary that the collection of score sets tried is heterogeneous enough across 
 #' the iterations. OF uses a particular algorithm for sampling the score sets tried that leads to a strongly heterogeneous collection of sets.
-#' This algorithm features the hyperparameter \code{npermtrial}, where it has been seen in Hornung (2017) that the results are quite 
+#' This algorithm features the hyperparameter \code{npermtrial}, where it has been seen in Hornung (2019) that the results are quite 
 #' robust with respect to the choice of the value of this parameter.
 #' \item \code{nbest} \verb{   } Default value: 10. In the case of a relatively small value of \code{nsets}, it is important that the 
 #' number \code{nbest} of best score sets used to calculate the optimized score set is not strongly misspecified. A too large value of \code{nbest} 
 #' leads to including suboptimal score sets into the calculation of the optimized score set that are too distinct from the optimal score set.
 #' Conversely, a too small value of \code{nbest} leads to a high variance of the optimized score set. The combination \code{nsets=1000} and \code{nbest=10}
 #' should lead to a good trade-off between the heterogeneity of the considered score sets and the variance in the estimation.
-#' In Hornung (2017) this combination delivered good results and it was seen that using a very large value of \code{nbest} can lead to worse results.
+#' In Hornung (2019) this combination delivered good results and it was seen that using a very large value of \code{nbest} can lead to worse results.
 #' }
 #' }
 #'
@@ -148,7 +154,7 @@
 #' \item{varimp}{ vector of length p. Permutation variable importance for each covariate. Currently the misclassification error is used as error measure in the variable importance. }
 #'
 #' @references
-#' Hornung R. (2017) Ordinal Forests. Tech. Rep. 212, Department of Statistics, University of Munich.
+#' Hornung R. (2019) Ordinal Forests. Journal of Classification, <\doi{10.1007/s00357-018-9302-x}>.
 #'
 #' @examples
 #' data(hearth)
@@ -167,7 +173,7 @@
 #'
 #' @export
 ordfor <-
-  function(depvar, data, nsets=1000, ntreeperdiv=100, ntreefinal=5000, perffunction = c("equal", "proportional", "oneclass", "custom"), classimp, classweights, nbest=10, naive=FALSE, num.threads = NULL, npermtrial=500, permperdefault = FALSE) {
+  function(depvar, data, nsets=1000, ntreeperdiv=100, ntreefinal=5000, perffunction = c("equal", "proportional", "oneclass", "custom"), classimp, classweights, nbest=10, naive=FALSE, num.threads = NULL, npermtrial=500, permperdefault = FALSE, mtry = NULL, min.node.size = NULL, replace = TRUE, sample.fraction = ifelse(replace, 1, 0.632), always.split.variables = NULL, keep.inbag = FALSE) {
     
     if (is.null(num.threads)) {
       num.threads = 0
@@ -266,7 +272,9 @@ ordfor <-
         
         # Construct b-th regression tree:
         forests[[b]] <- rangerordfor(dependent.variable.name = "ymetric", data = datait, 
-                                       num.trees = ntreeperdiv, num.threads=num.threads)
+                                       num.trees = ntreeperdiv, num.threads=num.threads, 
+									   mtry=mtry, min.node.size=min.node.size, replace=replace, 
+									   sample.fraction=sample.fraction, always.split.variables=always.split.variables)
         
         # Obtain OOB predictions:
         allpred <- forests[[b]]$predictions
@@ -320,10 +328,15 @@ ordfor <-
     # Construct ordinal forest:
     if(!is.na(bordersbest[1]))
      forestfinal <- rangerordfor(dependent.variable.name = "ymetric", data = datait, 
-                                   num.trees = ntreefinal, importance="permutation", num.threads=num.threads, borders=qnorm(bordersbest[-c(1,length(bordersbest))]))
+                                   num.trees = ntreefinal, importance="permutation", 
+								   num.threads=num.threads, borders=qnorm(bordersbest[-c(1,length(bordersbest))]), 
+								   mtry=mtry, min.node.size=min.node.size, replace=replace, sample.fraction=sample.fraction, always.split.variables=always.split.variables, 
+								   keep.inbag=keep.inbag)
     else
     forestfinal <- rangerordfor(dependent.variable.name = "ymetric", data = datait, 
-                                   num.trees = ntreefinal, importance="permutation", num.threads=num.threads, borders=(2:J) - 0.5)
+                                   num.trees = ntreefinal, importance="permutation", num.threads=num.threads, borders=(2:J) - 0.5,
+								   mtry=mtry, min.node.size=min.node.size, replace=replace, sample.fraction=sample.fraction, always.split.variables=always.split.variables, 
+								   keep.inbag=keep.inbag)
    
     # Ordinal classes of the target variable:
     classes <- levels(y)
