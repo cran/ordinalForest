@@ -274,7 +274,9 @@ ordfor <-
         forests[[b]] <- rangerordfor(dependent.variable.name = "ymetric", data = datait, 
                                        num.trees = ntreeperdiv, num.threads=num.threads, 
 									   mtry=mtry, min.node.size=min.node.size, replace=replace, 
-									   sample.fraction=sample.fraction, always.split.variables=always.split.variables)
+									   sample.fraction=sample.fraction, 
+									   always.split.variables=always.split.variables,
+									   write.forest=FALSE)
         
         # Obtain OOB predictions:
         allpred <- forests[[b]]$predictions

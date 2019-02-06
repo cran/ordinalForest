@@ -61,6 +61,7 @@ predict.ordfor <-
     
     # Calculations of class probabilities using individual tree predictions:
     
+	newdata <- newdata[,object$forestfinal$forest$independent.variable.names]
     yforestpredmetricmat <- predict(object=object$forestfinal, data=newdata, predict.all = TRUE)$predictions
     
     if(!is.na(object$perffunctionvalues[1]))

@@ -2,8 +2,8 @@ Package: ordinalForest
 Type: Package
 Title: Ordinal Forests: Prediction and Variable Ranking with Ordinal
         Target Variables
-Version: 2.3
-Date: 2019-01-22
+Version: 2.3-1
+Date: 2019-02-06
 Author: Roman Hornung
 Maintainer: Roman Hornung <hornung@ibe.med.uni-muenchen.de>
 Imports: Rcpp (>= 0.11.2), combinat, ggplot2, nnet
@@ -24,6 +24,6 @@ License: GPL-2
 Encoding: UTF-8
 RoxygenNote: 6.1.1
 NeedsCompilation: yes
-Packaged: 2019-01-24 10:22:52 UTC; hornung
+Packaged: 2019-02-06 09:56:52 UTC; hornung
 Repository: CRAN
-Date/Publication: 2019-01-24 12:50:02 UTC
+Date/Publication: 2019-02-06 11:20:03 UTC
