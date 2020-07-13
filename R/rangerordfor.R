@@ -16,7 +16,7 @@ rangerordfor <- function(formula = NULL, data = NULL, num.trees = 500, mtry = NU
                    num.threads = NULL, save.memory = FALSE,
                    verbose = TRUE, seed = NULL, 
                    dependent.variable.name = NULL, status.variable.name = NULL, 
-                   classification = NULL, borders = NULL) { 
+                   classification = NULL, borders = NULL, userps=FALSE) { 
   
   ## GenABEL GWA data
   if ("gwaa.data" %in% class(data)) {
@@ -434,7 +434,7 @@ rangerordfor <- function(formula = NULL, data = NULL, num.trees = 500, mtry = NU
                       status.variable.name, prediction.mode, loaded.forest, sparse.data,
                       replace, probability, unordered.factor.variables, use.unordered.factor.variables, 
                       save.memory, splitrule.num, case.weights, use.case.weights, predict.all, 
-                      keep.inbag, sample.fraction, alpha, minprop, holdout, prediction.type, borders)
+                      keep.inbag, sample.fraction, alpha, minprop, holdout, prediction.type, borders, userps)
   
   if (length(result) == 0) {
     stop("User interrupt or internal error.")

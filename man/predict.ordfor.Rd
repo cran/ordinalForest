@@ -17,7 +17,8 @@
 \code{predict.ordfor} returns an object of class \code{ordforpred}.
 An object of class "\code{ordforpred}" is a list containing the following components: 
 \item{ypred}{ vector of length \code{nrow(newdata)}. Factor-valued test data predictions. }
-\item{classfreqtree}{ matrix of dimension \code{nrow(newdata)} x J. The value in the j-th column of the i-th row contains the frequency of trees that predicted class j for test observation i. }
+\item{classprobs}{ predicted class probabilities. Only provided, if the performance function based on the ranked probability score was used, while training the ordinal forest (see \code{\link{ordfor}}).
+Matrix of dimension \code{nrow(newdata)} x J (NA, if the ranked probability was not used while training). The value in the j-th column of the i-th row contains the predicted probability that test observation i is of class j. }
 }
 \description{
 Prediction of test data using ordinal forest.
@@ -32,8 +33,9 @@ testind <- sort(sample(setdiff(1:nrow(hearth), trainind), size=20))
 datatrain <- hearth[trainind,]
 datatest <- hearth[testind,]
 
-ordforres <- ordfor(depvar="Class", data=datatrain, nsets=60, nbest=5)
-# NOTE: nsets=60 is not enough, because the prediction performance of the resulting 
+ordforres <- ordfor(depvar="Class", data=datatrain, nsets=50, nbest=5, ntreeperdiv=100, 
+  ntreefinal=1000)
+# NOTE: nsets=50 is not enough, because the prediction performance of the resulting 
 # ordinal forest will be suboptimal!! In practice, nsets=1000 (default value) or a larger
 # number should be used.
 
@@ -42,9 +44,9 @@ preds
  
 table(data.frame(true_values=datatest$Class, predictions=preds$ypred))
 
-head(preds$classfreqtree)
+head(preds$classprobs)
 
 }
 \references{
-Hornung R. (2019) Ordinal Forests. Journal of Classification, <\doi{10.1007/s00357-018-9302-x}>.
+Hornung R. (2020) Ordinal Forests. Journal of Classification 37, 4–17. <\doi{10.1007/s00357-018-9302-x}>.
 }

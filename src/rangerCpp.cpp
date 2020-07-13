@@ -30,6 +30,8 @@
 #include <vector>
 #include <sstream>
 
+#include <Rcpp.h>
+
 #include "globals.h"
 #include "Forest.h"
 #include "ForestClassification.h"
@@ -51,13 +53,13 @@ Rcpp::List rangerCpp(uint treetype, std::string dependent_variable_name,
     bool sample_with_replacement, bool probability, std::vector<std::string>& unordered_variable_names,
     bool use_unordered_variable_names, bool save_memory, uint splitrule_r, 
     std::vector<std::vector<double>>& case_weights, bool use_case_weights, bool predict_all,  // Kommentar Roman, zuvor: std::vector<double>& case_weights
-    bool keep_inbag, double sample_fraction, double alpha, double minprop, bool holdout, uint prediction_type_r, std::vector<double>& borders) {
+    bool keep_inbag, double sample_fraction, double alpha, double minprop, bool holdout, uint prediction_type_r, std::vector<double>& borders, bool userps) {
 
   Rcpp::List result;
   Forest* forest = 0;
   Data* data = 0;
   try {
-
+  
     // Empty split select weights and always split variables if not used
     if (!use_split_select_weights) {
       split_select_weights.clear();
@@ -117,10 +119,11 @@ Rcpp::List rangerCpp(uint treetype, std::string dependent_variable_name,
     forest->initR(dependent_variable_name, data, mtry, num_trees, verbose_out, seed, num_threads,
         importance_mode, min_node_size, split_select_weights, always_split_variable_names, status_variable_name,
         prediction_mode, sample_with_replacement, unordered_variable_names, save_memory, splitrule, case_weights, 
-        predict_all, keep_inbag, sample_fraction, alpha, minprop, holdout, prediction_type, borders);
+        predict_all, keep_inbag, sample_fraction, alpha, minprop, holdout, prediction_type, borders, userps);
 
     // Load forest object if in prediction mode
     if (prediction_mode) {
+		
       size_t dependent_varID = loaded_forest["dependent.varID"];
       //size_t num_trees = loaded_forest["num.trees"];
       std::vector<std::vector<std::vector<size_t>> > child_nodeIDs = loaded_forest["child.nodeIDs"];
@@ -133,8 +136,9 @@ Rcpp::List rangerCpp(uint treetype, std::string dependent_variable_name,
         ((ForestClassification*) forest)->loadForest(dependent_varID, num_trees, child_nodeIDs, split_varIDs,
             split_values, class_values, is_ordered);
       } else if (treetype == TREE_REGRESSION) {
+		  std::vector<std::vector<std::vector<double>>> endnodeprobs = loaded_forest["endnodeprobs"];
         ((ForestRegression*) forest)->loadForest(dependent_varID, num_trees, child_nodeIDs, split_varIDs, split_values,
-            is_ordered);
+            is_ordered, endnodeprobs);
       } else if (treetype == TREE_SURVIVAL) {
         size_t status_varID = loaded_forest["status.varID"];
         std::vector<std::vector<std::vector<double>> > chf = loaded_forest["chf"];
@@ -152,7 +156,7 @@ Rcpp::List rangerCpp(uint treetype, std::string dependent_variable_name,
 
     // Run Ranger
     forest->run(false);
-
+	
     if (use_split_select_weights && importance_mode != IMP_NONE) {
       *verbose_out
           << "Warning: Split select weights used. Variable importance measures are only comparable for variables with equal weights."
@@ -167,6 +171,10 @@ Rcpp::List rangerCpp(uint treetype, std::string dependent_variable_name,
       ForestSurvival* temp = (ForestSurvival*) forest;
       result.push_back(temp->getUniqueTimepoints(), "unique.death.times");
     }
+		 if (treetype == TREE_REGRESSION && userps) {
+			 		      ForestRegression* temp = (ForestRegression*) forest;
+			result.push_back(temp->getEndNodePredictions(), "predictionsrps");
+		 }
     if (!verbose) {
       std::stringstream temp;
       temp << verbose_out->rdbuf();
@@ -195,6 +203,10 @@ Rcpp::List rangerCpp(uint treetype, std::string dependent_variable_name,
       forest_object.push_back(forest->getSplitValues(), "split.values");
       forest_object.push_back(forest->getIsOrderedVariable(), "is.ordered");
 
+	 if (treetype == TREE_REGRESSION) { /// && userps) {
+		      ForestRegression* temp = (ForestRegression*) forest;
+			  forest_object.push_back(temp->getSplitValuesAll(), "endnodeprobs");
+	}
       if (treetype == TREE_CLASSIFICATION) {
         ForestClassification* temp = (ForestClassification*) forest;
         forest_object.push_back(temp->getClassValues(), "class.values");

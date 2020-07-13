@@ -3,7 +3,7 @@ predict.ranger.forest <- function(object, data, predict.all = FALSE,
                                   num.trees = object$num.trees, 
                                   type = "response",
                                   seed = NULL, num.threads = NULL,
-                                  verbose = TRUE, ...) {
+                                  verbose = TRUE, userps=FALSE, ...) {
 
   ## GenABEL GWA data
   if ("gwaa.data" %in% class(data)) {
@@ -187,7 +187,7 @@ predict.ranger.forest <- function(object, data, predict.all = FALSE,
                       status.variable.name, prediction.mode, forest, sparse.data, replace, probability,
                       unordered.factor.variables, use.unordered.factor.variables, save.memory, splitrule,
                       case.weights, use.case.weights, predict.all, keep.inbag, sample.fraction,
-                      alpha, minprop, holdout, prediction.type, borders=c(0,0))
+                      alpha, minprop, holdout, prediction.type, borders=c(0,0), userps)
 
   if (length(result) == 0) {
     stop("User interrupt or internal error.")
@@ -228,10 +228,10 @@ predict.ranger <- function(object, data, predict.all = FALSE,
                            num.trees = object$num.trees,
                            type = "response",
                            seed = NULL, num.threads = NULL,
-                           verbose = TRUE, ...) {
+                           verbose = TRUE, userps=FALSE, ...) {
   forest <- object$forest
   if (is.null(forest)) {
     stop("Error: No saved forest in ranger object. Please set write.forest to TRUE when calling ranger.")
   }
-  predict(forest, data, predict.all, num.trees, type, seed, num.threads, verbose)
+  predict(forest, data, predict.all, num.trees, type, seed, num.threads, verbose, userps)
 }

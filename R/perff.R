@@ -1,8 +1,12 @@
 #' Performance functions based on Youden's J statistic
 #' 
-#' These performance functions based on Youden's J statistic are used in \code{\link{ordfor}} to measure the performance
-#' of the smaller regression forests constructed prior to the approximation of the optimal score set. These functions may, however, also be used to measure the precision of
-#' predictions on new data or the precision of OOB predictions.
+#' In \code{\link{ordfor}} so-called performance functions are used to measure the performance of the 
+#' smaller regression forests constructed prior to the approximation of the optimal score set.
+#' Except for one, which uses the ranked probability score (enabling class probability estimation), all of these performance functions are based on Youden's J statistic. 
+#' These functions may, however, also be used to measure the precision of
+#' predictions on new data or the precision of OOB predictions. Note that the performance function using the
+#' ranked probability score is not covered in this help page. The function \code{rps} from the package 
+#' \code{verification} (version 1.42) can be used to calculate the ranked probability score.
 #' 
 #' \code{perff_equal} should be used if it is of interest to classify observations from each class with the same accuracy independent of the class sizes. 
 #' Youden's J statistic is calculated with respect to each class ("observation/prediction in class j" vs. "observation/prediction NOT in class j" (j=1,...,J))
@@ -32,7 +36,7 @@
 #' @name perff
 #'
 #' @references
-#' Hornung R. (2019) Ordinal Forests. Journal of Classification, <\doi{10.1007/s00357-018-9302-x}>.
+#' Hornung R. (2020) Ordinal Forests. Journal of Classification 37, 4–17. <\doi{10.1007/s00357-018-9302-x}>.
 NULL
 #> NULL
 
@@ -46,8 +50,9 @@ NULL
 #' datatrain <- hearth[trainind,]
 #' datatest <- hearth[testind,]
 #'
-#' ordforres <- ordfor(depvar="Class", data=datatrain, nsets=60, nbest=5)
-#' # NOTE: nsets=60 is not enough, because the prediction performance of the resulting 
+#' ordforres <- ordfor(depvar="Class", data=datatrain, nsets=50, nbest=5, ntreeperdiv=100, 
+#'   ntreefinal=1000)
+#' # NOTE: nsets=50 is not enough, because the prediction performance of the resulting 
 #' # ordinal forest will be suboptimal!! In practice, nsets=1000 (default value) or a larger
 #' # number should be used.
 #'
@@ -116,7 +121,7 @@ perff_custom <-
 function(ytest, ytestpred, categ, classweights) {
   
   categs <- sort(unique(ytest))
-  classweights <- sapply(categs, function(x) classweights[levels(ytest)==x])
+  #### classweights <- sapply(categs, function(x) classweights[levels(ytest)==x])
   classweights <- classweights/sum(classweights)
   sum(classweights*sapply(categs, function(x) youdenindex(ytest, ytestpred, x)))
   

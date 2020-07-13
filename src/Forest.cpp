@@ -37,6 +37,8 @@
 #include <chrono>
 #endif
 
+#include <Rcpp.h>
+
 #include "utility.h"
 #include "Forest.h"
 #include "DataChar.h"
@@ -64,7 +66,7 @@ void Forest::initCpp(std::string dependent_variable_name, MemoryMode memory_mode
     std::string split_select_weights_file, std::vector<std::string>& always_split_variable_names,
     std::string status_variable_name, bool sample_with_replacement, std::vector<std::string>& unordered_variable_names,
     bool memory_saving_splitting, SplitRule splitrule, std::string case_weights_file, bool predict_all,
-    double sample_fraction, double alpha, double minprop, bool holdout, PredictionType prediction_type, std::vector<double>& borders) {
+    double sample_fraction, double alpha, double minprop, bool holdout, PredictionType prediction_type, std::vector<double>& borders, bool userps) {
 
   this->verbose_out = verbose_out;
 
@@ -98,7 +100,7 @@ void Forest::initCpp(std::string dependent_variable_name, MemoryMode memory_mode
   // Call other init function
   init(dependent_variable_name, memory_mode, data, mtry, output_prefix, num_trees, seed, num_threads, importance_mode,
       min_node_size, status_variable_name, prediction_mode, sample_with_replacement, unordered_variable_names,
-      memory_saving_splitting, splitrule, predict_all, sample_fraction, alpha, minprop, holdout, prediction_type, borders);
+      memory_saving_splitting, splitrule, predict_all, sample_fraction, alpha, minprop, holdout, prediction_type, borders, userps);
 
   if (prediction_mode) {
     loadFromFile(load_forest_filename);
@@ -167,14 +169,14 @@ void Forest::initR(std::string dependent_variable_name, Data* input_data, uint m
     std::string status_variable_name, bool prediction_mode, bool sample_with_replacement,
     std::vector<std::string>& unordered_variable_names, bool memory_saving_splitting, SplitRule splitrule,
     std::vector<std::vector<double>>& case_weights, bool predict_all, bool keep_inbag, double sample_fraction, double alpha,  // Kommentar Roman, zuvor: std::vector<double>& case_weights  
-    double minprop, bool holdout, PredictionType prediction_type, std::vector<double>& borders) {
+    double minprop, bool holdout, PredictionType prediction_type, std::vector<double>& borders, bool userps) {
 
   this->verbose_out = verbose_out;
   
   // Call other init function
   init(dependent_variable_name, MEM_DOUBLE, input_data, mtry, "", num_trees, seed, num_threads, importance_mode,
       min_node_size, status_variable_name, prediction_mode, sample_with_replacement, unordered_variable_names,
-      memory_saving_splitting, splitrule, predict_all, sample_fraction, alpha, minprop, holdout, prediction_type, borders);
+      memory_saving_splitting, splitrule, predict_all, sample_fraction, alpha, minprop, holdout, prediction_type, borders, userps);
 
   // Set variables to be always considered for splitting
   if (!always_split_variable_names.empty()) {
@@ -212,7 +214,7 @@ void Forest::init(std::string dependent_variable_name, MemoryMode memory_mode, D
     uint min_node_size, std::string status_variable_name, bool prediction_mode, bool sample_with_replacement,
     std::vector<std::string>& unordered_variable_names, bool memory_saving_splitting, SplitRule splitrule,
     bool predict_all, double sample_fraction, double alpha, double minprop, bool holdout,
-    PredictionType prediction_type, std::vector<double>& borders) {
+    PredictionType prediction_type, std::vector<double>& borders, bool userps) {
 
   // Initialize data with memmode
   this->data = input_data;
@@ -255,6 +257,7 @@ void Forest::init(std::string dependent_variable_name, MemoryMode memory_mode, D
   this->minprop = minprop;
   this->prediction_type = prediction_type;
   this->borders = borders;
+  this->userps = userps;
 
   // Set number of samples and variables
   num_samples = data->getNumRows();
@@ -319,14 +322,16 @@ void Forest::run(bool verbose) {
     if (verbose) {
       *verbose_out << "Computing prediction error .." << std::endl;
     }
+	
     computePredictionError();
-
+ 
     if (importance_mode > IMP_GINI) {
       if (verbose) {
         *verbose_out << "Computing permutation variable importance .." << std::endl;
       }
       computePermutationImportance();
     }
+	
   }
 }
 
@@ -431,7 +436,7 @@ void Forest::grow() {
 
   // Call special grow functions of subclasses. There trees must be created.
   growInternal();
-
+  
   // Init trees, create a seed for each tree, based on main seed
   std::uniform_int_distribution<uint> udist;
   for (size_t i = 0; i < num_trees; ++i) {
@@ -462,9 +467,9 @@ void Forest::grow() {
     trees[i]->init(data, mtry, dependent_varID, num_samples, tree_seed, &deterministic_varIDs, &split_select_varIDs,
         tree_split_select_weights, importance_mode, min_node_size, &no_split_variables, sample_with_replacement,
         &is_ordered_variable, memory_saving_splitting, splitrule, tree_case_weights, keep_inbag, sample_fraction, alpha, // Kommentar Roman, zuvor: &case_weights
-        minprop, holdout, &borders);
+        minprop, holdout, &borders, userps);
   }
-
+  
 // Init variable importance
   variable_importance.resize(num_independent_variables, 0);
 
@@ -527,6 +532,7 @@ void Forest::grow() {
       v /= num_trees;
     }
   }
+  
 }
 
 void Forest::predict() {
@@ -599,8 +605,9 @@ void Forest::computePredictionError() {
 #endif
 #endif
 
-  // Call special function for subclasses
+// Call special function for subclasses:
   computePredictionErrorInternal();
+ 
 }
 
 void Forest::computePermutationImportance() {

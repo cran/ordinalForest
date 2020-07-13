@@ -34,6 +34,7 @@
 
 #include "globals.h"
 #include "Forest.h"
+#include "TreeRegression.h"
 
 class ForestRegression: public Forest {
 public:
@@ -43,8 +44,23 @@ public:
   void loadForest(size_t dependent_varID, size_t num_trees,
       std::vector<std::vector<std::vector<size_t>> >& forest_child_nodeIDs,
       std::vector<std::vector<size_t>>& forest_split_varIDs, std::vector<std::vector<double>>& forest_split_values,
-      std::vector<bool>& is_ordered_variable);
+      std::vector<bool>& is_ordered_variable, std::vector<std::vector<std::vector<double>>>& forest_endnodeprobs);
+	  
+  const std::vector<std::vector<std::vector<double>> >& getEndNodePredictions() const {
+    return predictionsrps;
+  }
 
+  void computeOOBpredictions();
+  
+    std::vector<std::vector<std::vector<double>>> getSplitValuesAll() {
+    std::vector<std::vector<std::vector<double>>> result;
+    for (auto& tree : trees) {
+	          TreeRegression* temp = (TreeRegression*) tree;
+      result.push_back(temp->getSplitValuesAll());
+    }
+    return result;
+  }
+	  
 private:
   void initInternal(std::string status_variable_name);
   void growInternal();
@@ -55,7 +71,9 @@ private:
   void writePredictionFile();
   void saveToFileInternal(std::ofstream& outfile);
   void loadFromFileInternal(std::ifstream& infile);
-
+  
+  std::vector<std::vector<std::vector<double>>> predictionsrps;
+  
   DISALLOW_COPY_AND_ASSIGN(ForestRegression);
 };
 

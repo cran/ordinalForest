@@ -3,7 +3,9 @@
 \name{hearth}
 \alias{hearth}
 \title{Data on Coronary Artery Disease}
-\format{A data frame with 294 observations, ten covariates and one ordinal target variable}
+\format{
+A data frame with 294 observations, ten covariates and one ordinal target variable
+}
 \source{
 OpenML: data.name: heart-h, data.id: 1565, link: \url{https://www.openml.org/d/1565/}
 }

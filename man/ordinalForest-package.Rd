@@ -11,9 +11,15 @@ it can be used to predict the values of the ordinal target variable for new obse
 Moreover, by means of the (permutation-based) variable importance measure of OF, it is also possible to rank the covariates 
 with respect to their importances in the prediction of the values of the ordinal target 
 variable. \cr
-OF is presented in Hornung (2019).
+OF is presented in Hornung (2020).
 }
 \details{
+Starting with package version 2.4, it is also possible to obtain class probability 
+predictions in addition to the class point predictions and variable importance values
+based on the class probabilities through using the (negative) ranked probability score (Epstein, 1969)
+as performance function (\code{perffunction="probability"}, new default). Using the ranked probability score in the variable importance can be expected to deliver more stable variable rankings, because the ranked probability score accounts for the ordinal scale of the dependent variable.  In situations in which there is no need for predicting class probabilities, but simply
+class predictions are sufficient, other performance functions may be more suitable. See the documentation of the \code{\link{ordfor}} function for further details.
+
 For a brief, practice-orientated introduction to OF see: \code{\link{ordfor}}
 
 The main functions are: \code{\link{ordfor}} (construction of OF prediction rules) and
@@ -22,8 +28,7 @@ The main functions are: \code{\link{ordfor}} (construction of OF prediction rule
 NOTE: \pkg{ordinalForest} uses R code and C++ code from the R package \pkg{ranger} for the involved regression forests.
 \pkg{ordinalForest} does, however, not depend on \pkg{ranger} or import \pkg{ranger}, because it was necessary to
 copy the C++ code and parts of the R code from \pkg{ranger} to \pkg{ordinalForest} instead. The reason for this
-is that \pkg{ranger}'s C++ code had to be altered in order to calculate a suitable permutation variable importance
-measure for ordinal forests.
+is that \pkg{ranger}'s C++ code had to be altered in part in order to implement ordinal forest.
 }
 \examples{
 \dontrun{
@@ -51,7 +56,9 @@ datatrain <- hearth[trainind,]
 datatest <- hearth[testind,]
 
 
-# Construct OF prediction rule using the training dataset:
+# Construct OF prediction rule using the training dataset (default 
+# perffunction = "probability" corresponding to the 
+# (negative) ranked probability score as performance function):
 
 ordforres <- ordfor(depvar="Class", data=datatrain, nsets=1000, ntreeperdiv=100, 
   ntreefinal=5000, perffunction = "equal")
@@ -75,5 +82,6 @@ table(data.frame(true_values=datatest$Class, predictions=preds$ypred))
 
 }
 \references{
-Hornung R. (2019) Ordinal Forests. Journal of Classification, <\doi{10.1007/s00357-018-9302-x}>.
+Hornung R. (2020) Ordinal Forests. Journal of Classification 37, 4–17. <\doi{10.1007/s00357-018-9302-x}>.
+Epstein E.S. (1969) A scoring system for probability forecasts of ranked categories, Journal of Applied Meteorology. 8(6), 985-987.
 }
