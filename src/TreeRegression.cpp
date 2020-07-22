@@ -71,25 +71,14 @@
    }
    return (sum_responses_in_node / (double) num_samples_in_node);
  }
- 
- std::vector<double> TreeRegression::getresponsevalues(size_t nodeID) {
-   
-   std::vector<double> result;
-   size_t num_samples_in_node = sampleIDs[nodeID].size();
-   result.reserve(num_samples_in_node);
-   
-   for (size_t i = 0; i < sampleIDs[nodeID].size(); ++i) {
-     result.push_back(data->get(sampleIDs[nodeID][i], dependent_varID));
-   }
-   return result;
- }
- 
+
  std::vector<double> TreeRegression::CalculateProbs(size_t nodeID) {
    
    size_t num_samples_in_node = sampleIDs[nodeID].size();
    size_t nclass = (*borders).size()+1;
-   
-   std::vector<size_t> tempsums(nclass, 0);
+
+   std::vector<size_t> tempsums;
+   tempsums.resize(nclass, 0);
    
    for (size_t i = 0; i < num_samples_in_node; ++i) {
      
@@ -97,7 +86,7 @@
      double temp = data->get(sampleIDs[nodeID][i], dependent_varID);
      
      size_t count = 0;
-     while ((*borders)[count] < temp && count < nclass-1) {
+     while (count < nclass-1 && (*borders)[count] < temp) {
        ++count;
      }
      
@@ -106,7 +95,8 @@
      
    }
    
-   std::vector<double> probs(nclass, 0.0);
+   std::vector<double> probs;
+   probs.resize(nclass, 0.0);
    
    for (size_t i = 0; i < nclass; ++i) {
      probs[i] = (double) tempsums[i] / (double) num_samples_in_node;
@@ -125,7 +115,7 @@
    // Check node size, stop if maximum reached
    if (sampleIDs[nodeID].size() <= min_node_size) {
      split_values[nodeID] = estimate(nodeID);
-     endnodeprobs[nodeID] = CalculateProbs(nodeID);//CalculateProbs(nodeID);
+     endnodeprobs[nodeID] = CalculateProbs(nodeID);
      return true;
    }
    
@@ -340,7 +330,6 @@
    // Save best values
    split_varIDs[nodeID] = best_varID;
    split_values[nodeID] = best_value;
-   ///endnodeprobs[nodeID] = getresponsevalues(nodeID);
    
    // Compute decrease of impurity for this node and add to variable importance if needed
    if (importance_mode == IMP_GINI) {
@@ -616,7 +605,6 @@
      // If not terminal node save best values
      split_varIDs[nodeID] = best_varID;
      split_values[nodeID] = best_value;
-     ///endnodeprobs[nodeID] = getresponsevalues(nodeID);
      return false;
    }
  }

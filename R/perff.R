@@ -36,7 +36,9 @@
 #' @name perff
 #'
 #' @references
-#' Hornung R. (2020) Ordinal Forests. Journal of Classification 37, 4–17. <\doi{10.1007/s00357-018-9302-x}>.
+#' \itemize{
+#'   \item Hornung R. (2020) Ordinal Forests. Journal of Classification 37, 4–17. <\doi{10.1007/s00357-018-9302-x}>.
+#'   }
 NULL
 #> NULL
 

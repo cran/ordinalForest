@@ -47,7 +47,6 @@
    
    double estimate(size_t nodeID);
    std::vector<double> CalculateProbs(size_t nodeID);
-      std::vector<double> getresponsevalues(size_t nodeID);
    void computePermutationImportanceInternal(std::vector<std::vector<size_t>>* permutations);
    void appendToFileInternal(std::ofstream& file);
    

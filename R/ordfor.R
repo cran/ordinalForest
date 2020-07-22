@@ -165,8 +165,10 @@
 #' \item{varimp}{ vector of length p. Permutation variable importance for each covariate. If \code{perffunction="probability"}, the ranked probability score is used as error measure in the variable importance. For all other choices of the performance function, the misclassification error is used. }
 #'
 #' @references
-#' Hornung R. (2020) Ordinal Forests. Journal of Classification 37, 4–17. <\doi{10.1007/s00357-018-9302-x}>.
-#' Epstein E.S. (1969) A scoring system for probability forecasts of ranked categories, Journal of Applied Meteorology. 8(6), 985-987.
+#' \itemize{
+#'   \item Hornung R. (2020) Ordinal Forests. Journal of Classification 37, 4–17. <\doi{10.1007/s00357-018-9302-x}>.
+#'   \item Epstein E.S. (1969) A scoring system for probability forecasts of ranked categories, Journal of Applied Meteorology. 8(6), 985-987.
+#'   }
 #'
 #' @examples
 #' data(hearth)

@@ -25,8 +25,10 @@
 #' is that \pkg{ranger}'s C++ code had to be altered in part in order to implement ordinal forest.
 #'
 #' @references
-#' Hornung R. (2020) Ordinal Forests. Journal of Classification 37, 4–17. <\doi{10.1007/s00357-018-9302-x}>.
-#' Epstein E.S. (1969) A scoring system for probability forecasts of ranked categories, Journal of Applied Meteorology. 8(6), 985-987.
+#' \itemize{
+#'   \item Hornung R. (2020) Ordinal Forests. Journal of Classification 37, 4–17. <\doi{10.1007/s00357-018-9302-x}>.
+#'   \item Epstein E.S. (1969) A scoring system for probability forecasts of ranked categories, Journal of Applied Meteorology. 8(6), 985-987.
+#'   }
 #' 
 #' @examples
 #' \dontrun{

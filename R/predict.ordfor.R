@@ -14,7 +14,9 @@
 #' Matrix of dimension \code{nrow(newdata)} x J (NA, if the ranked probability was not used while training). The value in the j-th column of the i-th row contains the predicted probability that test observation i is of class j. }
 #'
 #' @references
-#' Hornung R. (2020) Ordinal Forests. Journal of Classification 37, 4–17. <\doi{10.1007/s00357-018-9302-x}>.
+#' \itemize{
+#'   \item Hornung R. (2020) Ordinal Forests. Journal of Classification 37, 4–17. <\doi{10.1007/s00357-018-9302-x}>.
+#'   }
 #'
 #' @examples
 #' data(hearth)

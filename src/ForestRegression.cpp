@@ -148,8 +148,10 @@
        } else {
          // Mean over trees
 		 size_t nclass = (((TreeRegression*) trees[0])->getEndNodePrediction(sample_idx)).size();
-		 std::vector<double> prediction_sum(nclass, 0.0);
-		 std::vector<double> prediction_temp(nclass, 0.0);		 	
+		    std::vector<double> prediction_sum;
+   prediction_sum.resize(nclass, 0.0);
+   		    std::vector<double> prediction_temp;
+   prediction_temp.resize(nclass, 0.0);
 			
          for (size_t tree_idx = 0; tree_idx < num_trees; ++tree_idx) {
          
