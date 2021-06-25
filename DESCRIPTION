@@ -2,8 +2,8 @@ Package: ordinalForest
 Type: Package
 Title: Ordinal Forests: Prediction and Variable Ranking with Ordinal
         Target Variables
-Version: 2.4-1
-Date: 2020-07-21
+Version: 2.4-2
+Date: 2021-06-25
 Author: Roman Hornung
 Maintainer: Roman Hornung <hornung@ibe.med.uni-muenchen.de>
 Imports: Rcpp (>= 0.11.2), combinat, nnet, verification
@@ -12,12 +12,13 @@ Description: The ordinal forest (OF) method allows ordinal regression with high-
   and low-dimensional data. After having constructed an OF prediction rule using a training dataset, 
   it can be used to predict the values of the ordinal target variable for new observations.
   Moreover, by means of the (permutation-based) variable importance measure of OF, it is also
-  possible to rank the covariates with respect to their importances in the prediction of the 
+  possible to rank the covariates with respect to their importance in the prediction of the 
   values of the ordinal target variable.
   OF is presented in Hornung (2020).
   NOTE: Starting with package version 2.4, it is also possible to obtain class probability 
-  predictions in addition to the class point predictions, where the variable importance values
-  are also obtained based on the class probabilities.
+  predictions in addition to the class point predictions. Moreover, the variable importance values
+  can also be based on the class probability predictions. Preliminary results indicate that
+  this might lead to a better discrimination between influential and non-influential covariates.
   The main functions of the package are: ordfor() (construction of OF) and predict.ordfor() 
   (prediction of the target variable values of new observations).
   References:
@@ -25,8 +26,8 @@ Description: The ordinal forest (OF) method allows ordinal regression with high-
   <doi:10.1007/s00357-018-9302-x>.
 License: GPL-2
 Encoding: UTF-8
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 NeedsCompilation: yes
-Packaged: 2020-07-21 17:33:47 UTC; hornung
+Packaged: 2021-06-25 13:16:49 UTC; Roman
 Repository: CRAN
-Date/Publication: 2020-07-22 21:10:12 UTC
+Date/Publication: 2021-06-25 13:30:02 UTC

@@ -10,7 +10,8 @@ ordfor(
   nsets = 1000,
   ntreeperdiv = 100,
   ntreefinal = 5000,
-  perffunction = c("probability", "equal", "proportional", "oneclass", "custom"),
+  importance = c("rps", "accuracy"),
+  perffunction = c("equal", "probability", "proportional", "oneclass", "custom"),
   classimp,
   classweights,
   nbest = 10,
@@ -41,9 +42,15 @@ for each of the \code{nsets} different score sets tried.}
 \item{ntreefinal}{integer. Number of trees in the larger regression forest 
 constructed using the optimized score set (i.e., the OF).}
 
-\item{perffunction}{character. Performance function. The default is \code{"probability"}. See 'Details', subsection 'Performance functions' below and \code{\link{perff}}.}
+\item{importance}{character. The type of variable importance measure to use. The default \code{"rps"} uses the ranked probability score as an error measure. 
+If set to \code{"accuracy"}, the importance measure is based on the accuracy. The latter choice corresponds to the default importance measure of random forests
+and does not take the ordinal scale of the target variable into account. NOTE: If the ranked probability score is used as performance function (\code{perffunction="probability"}),
+\code{importance} is set to \code{"rps"} automatically. Preliminary results indicate that the option \code{"rps"} might lead to a better discrimination between
+influential and non-influential covariates.}
 
-\item{classimp}{character. Class to priorize if \code{perffunction="oneclass"}.}
+\item{perffunction}{character. Performance function. The default is \code{"equal"}. See 'Details', subsection 'Performance functions' below and \code{\link{perff}}.}
+
+\item{classimp}{character. Class to prioritize if \code{perffunction="oneclass"}.}
 
 \item{classweights}{numeric. Needed if \code{perffunction="custom"}: vector of length equal to the number of classes. Class weights - the
 higher the weight w_j assigned to class j is chosen, the higher the accuracy of the OF with respect to discerning observations in class j from observations
@@ -60,13 +67,13 @@ naive ordinal forest can be considerably worse than that of a corresponding pred
 \item{num.threads}{integer. Number of threads. Default is number of CPUs available (passed to the modified \code{ranger} code).}
 
 \item{npermtrial}{integer. Number of permutations of the class width ordering to try for
-the 2th to the \code{nsets}th score set tried prior to the calculation of
+the second to the \code{nsets}th score set tried prior to the calculation of
 the optimized score set.}
 
 \item{permperdefault}{boolean. If set to \code{TRUE}, \code{npermtrial} different permutations will per default 
 be tried for the 2th to the \code{nsets}th score set used during the optimization - also for J! < \code{nsets}. Default is \code{FALSE}.}
 
-\item{mtry}{integer. Number of variables to possibly split at in each node. Default is the (rounded down) square root of the number variables.}
+\item{mtry}{integer. Number of variables to sample as candidate variables for each split. Default is the (rounded down) square root of the number of variables.}
 
 \item{min.node.size}{integer. Minimal node size. Default is 5, except if \code{perffunction="probability"}, in which case the default is 10.}
 
@@ -106,7 +113,7 @@ For details on OFs see the 'Details' section below. \cr
 NOTE: Starting with package version 2.4, it is also possible to obtain class probability 
 predictions in addition to the class point predictions and variable importance values
 based on the class probabilities through using the (negative) ranked probability score (Epstein, 1969)
-as performance function (\code{perffunction="probability"}, new default). Using the ranked probability score in the variable importance can be expected to deliver more stable variable rankings, because the ranked probability score accounts for the ordinal scale of the dependent variable.  In situations in which there is no need for predicting class probabilities, but simply
+as performance function (\code{perffunction="probability"}). Using the ranked probability score in the variable importance can be expected to deliver more stable variable rankings, because the ranked probability score accounts for the ordinal scale of the dependent variable.  In situations in which there is no need for predicting class probabilities, but simply
 class predictions are sufficient, other performance functions may be more suitable. See the subsection "Performance functions" in the "Details" section below for further details.
 }
 \details{
@@ -114,7 +121,7 @@ class predictions are sufficient, other performance functions may be more suitab
 The ordinal forest (OF) method allows ordinal regression with high-dimensional and low-dimensional 
 data. After having constructed an OF prediction rule using a training dataset, it can be used to predict the values of the ordinal target variable for new observations.
 Moreover, by means of the (permutation-based) variable importance measure of OF, it is also 
-possible to rank the covariates with respect to their importances in the prediction of the values
+possible to rank the covariates with respect to their importance in the prediction of the values
 of the ordinal target variable. \cr
 OF is presented in Hornung (2020). See the latter publication for details on the method. In the
 following, a brief, practice-orientated introduction to OF is provided.
@@ -149,8 +156,8 @@ Except in the case of using the (negative) ranked probabilty score as performanc
 If the (negative) ranked probabilty score is used as performance function, both class predictions and predicted class probabilities are provided: The class probabilities
 are obtained by averaging over the class probabilities predicted by the individual trees and the class predictions are obtained as the classes with maximum class probabilites.
 
-OF features a permutation variable importance measure that, if \code{perffunction} is set to \code{"probability"}, uses the ranked probability score as error measure
-and the misclassification error else.
+OF features a permutation variable importance measure that, if \code{importance} is set to \code{"rps"} (default), uses the ranked probability
+score as error measure and the misclassification error else (\code{importance="accuracy"}).
 }
 
 \subsection{Hyperparameters}{
@@ -187,12 +194,12 @@ In Hornung (2020) this combination delivered good results and it was seen that u
 As noted above, the different score sets tried during the estimation of the optimal score set are assessed with respect to their OOB prediction performance.
 The choice of the specific performance function used in these assessments determines the specific kind of performance the ordinal forest should feature:
 \itemize{
-\item \code{perffunction="probability"} \verb{   } This choice should be made if it is of interest to predict class probabilties for the observations.
-The ranked probability score is calculated between the predicted probabilities for the J classes and the observed class values. Because smaller values
-of the ranked probability score correspond to a better prediction, the negative ranked probability score is considered as performance functions.
 \item \code{perffunction="equal"} \verb{   } This choice should be made if it is of interest to classify observations from each class with the same accuracy independent of the class sizes. 
 Youden's J statistic is calculated with respect to each class ("observation/prediction in class j" vs. "observation/prediction NOT in class j" (j=1,...,J))
 and the simple average of the J results taken.
+\item \code{perffunction="probability"} \verb{   } This choice should be made if it is of interest to predict class probabilties for the observations.
+The ranked probability score is calculated between the predicted probabilities for the J classes and the observed class values. Because smaller values
+of the ranked probability score correspond to a better prediction, the negative ranked probability score is considered as performance functions.
 \item \code{perffunction="proportional"} \verb{   } This choice should be made if the main goal is to classify
 correctly as many observations as possible. The latter is associated with a preference for larger classes at the 
 expense of a lower classification accuracy with respect to smaller classes.
@@ -210,6 +217,7 @@ higher weights are prioritized by the OF algorithm over classes with smaller wei
 }
 }
 \examples{
+\dontrun{
 data(hearth)
 
 set.seed(123)
@@ -223,6 +231,7 @@ ordforres <- ordfor(depvar="Class", data=hearthsubset, nsets=50, nbest=5, ntreep
 ordforres
 
 sort(ordforres$varimp, decreasing=TRUE)
+}
 
 }
 \references{

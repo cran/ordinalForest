@@ -24,6 +24,7 @@ Matrix of dimension \code{nrow(newdata)} x J (NA, if the ranked probability was 
 Prediction of test data using ordinal forest.
 }
 \examples{
+\dontrun{
 data(hearth)
 
 set.seed(123)
@@ -33,8 +34,8 @@ testind <- sort(sample(setdiff(1:nrow(hearth), trainind), size=20))
 datatrain <- hearth[trainind,]
 datatest <- hearth[testind,]
 
-ordforres <- ordfor(depvar="Class", data=datatrain, nsets=50, nbest=5, ntreeperdiv=100, 
-  ntreefinal=1000)
+ordforres <- ordfor(depvar="Class", data=datatrain, perffunction = "probability", nsets=50,
+  nbest=5, ntreeperdiv=100, ntreefinal=1000)
 # NOTE: nsets=50 is not enough, because the prediction performance of the resulting 
 # ordinal forest will be suboptimal!! In practice, nsets=1000 (default value) or a larger
 # number should be used.
@@ -45,6 +46,7 @@ preds
 table(data.frame(true_values=datatest$Class, predictions=preds$ypred))
 
 head(preds$classprobs)
+}
 
 }
 \references{

@@ -43,6 +43,7 @@ NULL
 #> NULL
 
 #' @examples
+#' \dontrun{
 #' data(hearth)
 #'
 #' set.seed(123)
@@ -87,7 +88,8 @@ NULL
 #' 
 #' perff_custom(ytest=datatest$Class, ytestpred=preds$ypred, classweights=c(0,0,0,1,0))
 #' perff_oneclass(ytest=datatest$Class, ytestpred=preds$ypred, categ="4")
-#' 
+#' } 
+#'
 #' @rdname perff
 #' @export
 perff_equal <-

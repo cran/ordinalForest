@@ -19,6 +19,7 @@
 #'   }
 #'
 #' @examples
+#' \dontrun{
 #' data(hearth)
 #'
 #' set.seed(123)
@@ -28,8 +29,8 @@
 #' datatrain <- hearth[trainind,]
 #' datatest <- hearth[testind,]
 #'
-#' ordforres <- ordfor(depvar="Class", data=datatrain, nsets=50, nbest=5, ntreeperdiv=100, 
-#'   ntreefinal=1000)
+#' ordforres <- ordfor(depvar="Class", data=datatrain, perffunction = "probability", nsets=50,
+#'   nbest=5, ntreeperdiv=100, ntreefinal=1000)
 #' # NOTE: nsets=50 is not enough, because the prediction performance of the resulting 
 #' # ordinal forest will be suboptimal!! In practice, nsets=1000 (default value) or a larger
 #' # number should be used.
@@ -40,6 +41,7 @@
 #' table(data.frame(true_values=datatest$Class, predictions=preds$ypred))
 #' 
 #' head(preds$classprobs)
+#' }
 #'
 #' @importFrom stats predict qnorm runif
 #' 
@@ -76,12 +78,12 @@ predict.ordfor <-
       else
         ynumpred <- Reduce("+", lapply(c((1:J) - 0.5, J + 0.5)[1:J], function(x) x <= yforestpredmetricmat))
       
-      if(class(ynumpred)!="matrix")
+      if(class(ynumpred)[1]!="matrix")
         ynumpred <- matrix(nrow=1, ncol=length(ynumpred), data=ynumpred)
       
       freqs <- sapply(1:J, function(x) rowSums(ynumpred == x, na.rm = TRUE))/object$ntreefinal
       
-      if(class(freqs)!="matrix")
+      if(class(freqs)[1]!="matrix")
         freqs <- matrix(nrow=1, ncol=length(freqs), data=freqs)
       
       colnames(freqs) <- classes

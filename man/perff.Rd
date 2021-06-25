@@ -57,6 +57,7 @@ with user-specified weights (provided via the argument \code{classweights}) is t
 higher weights are prioritized by the OF algorithm over classes with smaller weights.
 }
 \examples{
+\dontrun{
 data(hearth)
 
 set.seed(123)
@@ -101,6 +102,7 @@ perff_proportional(ytest=datatest$Class, ytestpred=preds$ypred)
 
 perff_custom(ytest=datatest$Class, ytestpred=preds$ypred, classweights=c(0,0,0,1,0))
 perff_oneclass(ytest=datatest$Class, ytestpred=preds$ypred, categ="4")
+} 
 
 }
 \references{
