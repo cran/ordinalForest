@@ -19,7 +19,7 @@ predict.ranger.forest <- function(object, data, predict.all = FALSE,
   }
 
   ## Check forest argument
-  if (class(object) != "ranger.forest") {
+  if (!inherits(object, "ranger.forest")) {
     stop("Error: Invalid class of input object.")
   } else {
     forest <- object
