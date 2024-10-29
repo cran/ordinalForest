@@ -238,7 +238,7 @@ ordfor <-
 	} else {
 	
 		if(perffunction=="probability") {
-	if(min.node.size > 10)
+	if(min.node.size < 10)
 	  min.node.size <- 10
     warning("'min.node.size' must not be smaller than 10, if perffunction = 'probability'. -> 'min.node.size.' set to 10.")
     }

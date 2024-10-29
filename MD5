@@ -1,8 +1,8 @@
-f6467b7248a3135839598862e9e94291 *DESCRIPTION
+0f911a243fd2777db26135ba648dd157 *DESCRIPTION
 2202af047cbef10637c215d7e44cfa31 *NAMESPACE
 38faf44f0c382cbd271dc645129fc04d *R/RcppExports.R
 3014bf66d302beae5edea511da73b11e *R/hearth.R
-5ba1af2d876782a0517eac3df72a6adf *R/ordfor.R
+9013aef3dd804ccf58ce6d9354d3f196 *R/ordfor.R
 e3cbbdcc6f0c5696bda0d641d7350d86 *R/ordinalForest-package.R
 fb1e6b697c500b0714a37f93bc4c4844 *R/perff.R
 1deb26510a7dbb895956fb2b94d890b1 *R/predict.R
@@ -12,7 +12,7 @@ b046abb9a8adfe6677d5fc6400968209 *R/predict.ordfor.R
 40359ed389ce34b9733e89af0287c45d *R/rangerordfor.R
 461b600094de9215fdf01ced80b3fb22 *R/simulateborders.R
 ee5956ad3aed843beba8a6fd993a070d *R/youdenindex.R
-2a9ac495304ac7fc935b6ae6c1e0bbb0 *build/partial.rdb
+181b5ac5a69bd3e3e542680739e88fd5 *build/partial.rdb
 2941e4ac171d79c8a087e3ab4ace4377 *data/hearth.rda
 867b295b000e590b872b49d6bac66d95 *inst/include/ordinalForest.h
 4f5133ee433256276d4d2e13a1be2725 *man/hearth.Rd
